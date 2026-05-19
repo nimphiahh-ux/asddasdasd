@@ -1,7 +1,5 @@
-discord.py
+discord.py==2.3.2
 PyNaCl
 yt-dlp
 imageio-ffmpeg
 anthropic
-PyNaCl
-davey
