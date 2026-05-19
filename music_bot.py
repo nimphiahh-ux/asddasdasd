@@ -101,7 +101,7 @@ async def play(ctx, url):
 # ─────────────────────────────────────────
 #  오디오 소스 생성 헬퍼
 # ─────────────────────────────────────────
-def make_audio_source(stream_url: str, volume: float = 0.5):
+def make_audio_source(stream_url: str, volume: float = 0.4):
     """
     Opus가 로드돼 있으면 FFmpegOpusAudio (안정적),
     없으면 FFmpegPCMAudio + PCMVolumeTransformer 폴백.
@@ -117,14 +117,13 @@ def make_audio_source(stream_url: str, volume: float = 0.5):
             executable=FFMPEG_PATH,
             **opts,
         )
-    else:
-        # Opus 없을 때 폴백 (PCMVolumeTransformer 제거 → 안정성 향상)
-        return discord.FFmpegPCMAudio(
-            stream_url,
-            executable=FFMPEG_PATH,
-            **opts,
-        )
+   else:
+    vc = await voice_channel.connect()
+    await asyncio.sleep(2)
 
+if not vc.is_connected():
+    await ctx.send("❌ 음성 채널 연결 실패")
+    return
 
 # ─────────────────────────────────────────
 #  yt-dlp URL 추출
