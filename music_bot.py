@@ -12,6 +12,9 @@ YDL_OPTIONS = {
 }
 
 with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
+    info = ydl.extract_info(url, download=False)
+
+with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
 import asyncio
 import os
 import anthropic
