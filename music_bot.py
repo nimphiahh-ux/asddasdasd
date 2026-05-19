@@ -21,8 +21,7 @@ YTDL_OPTIONS = {
     "no_warnings": True,
     "default_search": "auto",
     "source_address": "0.0.0.0",
-    "cookiefile": "cookies.txt",   # 로그인이 필요한 경우 쿠키 파일 경로 (없으면 삭제 가능)
-}
+    "cookiefile": "/app/cookies.txt",
 
 FFMPEG_OPTIONS = {
     "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
