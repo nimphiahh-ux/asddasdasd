@@ -2,7 +2,6 @@ import imageio_ffmpeg
 FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
 
 import discord
-discord.opus.load_opus("libopus.so.0")
 from discord.ext import commands
 import yt_dlp
 import asyncio
