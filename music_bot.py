@@ -111,19 +111,18 @@ def make_audio_source(stream_url: str, volume: float = 0.4):
     opts = dict(FFMPEG_OPTIONS)
     opts["options"] = f"{opts['options']} -af volume={volume}"
 
-    if OPUS_LOADED:
-        return discord.FFmpegOpusAudio(
-            stream_url,
-            executable=FFMPEG_PATH,
-            **opts,
-        )
-   else:
-    vc = await voice_channel.connect()
-    await asyncio.sleep(2)
-
-if not vc.is_connected():
-    await ctx.send("❌ 음성 채널 연결 실패")
-    return
+   if OPUS_LOADED:
+    return discord.FFmpegOpusAudio(
+        stream_url,
+        executable=FFMPEG_PATH,
+        **opts,
+    )
+else:
+    return discord.FFmpegPCMAudio(
+        stream_url,
+        executable=FFMPEG_PATH,
+        **opts,
+    )
 
 # ─────────────────────────────────────────
 #  yt-dlp URL 추출
@@ -165,8 +164,13 @@ async def play(ctx, url: str = None):
             ctx.voice_client.stop()
         await ctx.voice_client.move_to(voice_channel)
         vc = ctx.voice_client
-    else:
-        vc = await voice_channel.connect()
+else:
+    vc = await voice_channel.connect()
+    await asyncio.sleep(2)
+
+if not vc.is_connected():
+    await ctx.send("❌ 음성 채널 연결 실패")
+    return
 
     msg = await ctx.send("🔍 정보 긁어오는 중...")
 
