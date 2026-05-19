@@ -17,7 +17,7 @@ def make_audio_source(stream_url: str, volume: float = 0.4):
     opts = dict(FFMPEG_OPTIONS)
     opts["options"] = f"{opts['options']} -af volume={volume}"
 
-    if OPUS_LOADED:
+     if OPUS_LOADED:
         return discord.FFmpegOpusAudio(
             stream_url,
             executable=FFMPEG_PATH,
