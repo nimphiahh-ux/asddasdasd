@@ -3,3 +3,5 @@ PyNaCl
 yt-dlp
 imageio-ffmpeg
 anthropic
+PyNaCl
+davey
