@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
+RUN pip install discord.py imageio-ffmpeg
 
 CMD ["python", "music_bot.py"]
