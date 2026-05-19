@@ -14,10 +14,6 @@ import glob
 #  Opus 로드 (강화 버전)
 # ─────────────────────────────────────────
 def make_audio_source(stream_url: str, volume: float = 0.4):
-    """
-    Opus가 로드돼 있으면 FFmpegOpusAudio,
-    없으면 FFmpegPCMAudio 사용
-    """
     opts = dict(FFMPEG_OPTIONS)
     opts["options"] = f"{opts['options']} -af volume={volume}"
 
@@ -33,7 +29,6 @@ def make_audio_source(stream_url: str, volume: float = 0.4):
             executable=FFMPEG_PATH,
             **opts,
         )
-
     # 직접 지정 경로 (컨테이너 환경 우선)
     candidates = [
         "/usr/lib/x86_64-linux-gnu/libopus.so.0",
