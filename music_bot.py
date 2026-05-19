@@ -141,8 +141,10 @@ async def extract_audio_url(url: str) -> dict:
 #  명령어
 # ─────────────────────────────────────────
 @bot.command(name="틀어재껴")
+async def play(ctx, url: str = None):
+
     if not url:
-        await ctx.send("❌ URL을 같이 입력해줘!  예) `!틀어재껴 https://youtu.be/xxxx`")
+        await ctx.send("❌ URL을 같이 입력해줘!")
         return
 
     if not ctx.author.voice:
@@ -151,52 +153,75 @@ async def extract_audio_url(url: str) -> dict:
 
     voice_channel = ctx.author.voice.channel
 
-if ctx.voice_client:
-    if ctx.voice_client.is_playing():
-        ctx.voice_client.stop()
+    try:
+        # 이미 연결돼 있으면 이동
+        if ctx.voice_client:
+            vc = ctx.voice_client
 
-    await ctx.voice_client.move_to(voice_channel)
-    vc = ctx.voice_client
+            if vc.channel != voice_channel:
+                await vc.move_to(voice_channel)
 
-else:
-    vc = await voice_channel.connect()
-    await asyncio.sleep(2)
+        else:
+            vc = await voice_channel.connect()
+            await asyncio.sleep(2)
 
-if not vc.is_connected():
-    await ctx.send("❌ 음성 채널 연결 실패")
-    return
+        if not vc.is_connected():
+            await ctx.send("❌ 음성 채널 연결 실패")
+            return
+
+    except Exception as e:
+        await ctx.send(f"❌ 음성채널 연결 오류: {e}")
+        return
+
     msg = await ctx.send("🔍 정보 긁어오는 중...")
 
     try:
         info = await extract_audio_url(url)
+
     except Exception as e:
-        await msg.edit(content=f"❌ 재생 실패: `{e}`")
+        await msg.edit(content=f"❌ 재생 실패: {e}")
+
         if vc.is_connected():
             await vc.disconnect()
+
         return
 
     try:
-        source = make_audio_source(info["stream_url"], volume=0.5)
+        source = make_audio_source(
+            info["stream_url"],
+            volume=0.5
+        )
+
     except Exception as e:
-        await msg.edit(content=f"❌ 오디오 소스 생성 실패: `{e}`")
+        await msg.edit(content=f"❌ 오디오 소스 생성 실패: {e}")
+
         if vc.is_connected():
             await vc.disconnect()
+
         return
 
     def after_play(error):
         if error:
             print(f"[재생 오류] {error}")
-        coro = vc.disconnect()
-        asyncio.run_coroutine_threadsafe(coro, bot.loop)
+
+        fut = asyncio.run_coroutine_threadsafe(
+            vc.disconnect(),
+            bot.loop
+        )
+
+        try:
+            fut.result()
+        except:
+            pass
 
     vc.play(source, after=after_play)
 
     dur_min, dur_sec = divmod(info["duration"], 60)
+
     await msg.edit(
         content=(
             f"▶️ **{info['title']}** 재생 시작!\n"
-            f"⏱️ {dur_min}분 {dur_sec}초 | 🔉 음량 50%\n"
-            f"끄려면 `!적당히해`"
+            f"⏱️ {dur_min}분 {dur_sec}초"
         )
     )
 
