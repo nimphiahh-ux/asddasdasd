@@ -13,7 +13,6 @@ import glob
 # ─────────────────────────────────────────
 #  Opus 로드 (강화 버전)
 # ─────────────────────────────────────────
-def make_audio_source(stream_url: str, volume: float = 0.4):
     opts = dict(FFMPEG_OPTIONS)
     opts["options"] = f"{opts['options']} -af volume={volume}"
 
