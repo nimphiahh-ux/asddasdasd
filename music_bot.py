@@ -96,7 +96,7 @@ async def play(ctx, url: str = None):
         return
 
     # FFmpeg 오디오 소스 생성
-    source = discord.FFmpegPCMAudio(info["stream_url"], **FFMPEG_OPTIONS)
+    source = discord.FFmpegPCMAudio(info["stream_url"], executable=FFMPEG_PATH, **FFMPEG_OPTIONS)
     source = discord.PCMVolumeTransformer(source, volume=0.5)
 
     # 재생 완료 콜백 → 자동 퇴장
