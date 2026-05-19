@@ -1,3 +1,4 @@
+discord.opus.load_opus('libopus.so.0')
 import imageio_ffmpeg
 FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
 import discord
