@@ -1,12 +1,15 @@
 FROM python:3.11-slim
 
+WORKDIR /app
+
 RUN apt-get update && apt-get install -y \
     ffmpeg \
-    libopus-dev \
+    libopus0 \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install discord.py imageio-ffmpeg
+COPY . .
+
+RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python", "music_bot.py"]
