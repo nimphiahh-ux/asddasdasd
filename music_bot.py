@@ -13,9 +13,26 @@ import glob
 # ─────────────────────────────────────────
 #  Opus 로드 (강화 버전)
 # ─────────────────────────────────────────
-def load_opus():
-    if discord.opus.is_loaded():
-        return True
+def make_audio_source(stream_url: str, volume: float = 0.4):
+    """
+    Opus가 로드돼 있으면 FFmpegOpusAudio,
+    없으면 FFmpegPCMAudio 사용
+    """
+    opts = dict(FFMPEG_OPTIONS)
+    opts["options"] = f"{opts['options']} -af volume={volume}"
+
+    if OPUS_LOADED:
+        return discord.FFmpegOpusAudio(
+            stream_url,
+            executable=FFMPEG_PATH,
+            **opts,
+        )
+    else:
+        return discord.FFmpegPCMAudio(
+            stream_url,
+            executable=FFMPEG_PATH,
+            **opts,
+        )
 
     # 직접 지정 경로 (컨테이너 환경 우선)
     candidates = [
@@ -148,7 +165,6 @@ async def extract_audio_url(url: str) -> dict:
 #  명령어
 # ─────────────────────────────────────────
 @bot.command(name="틀어재껴")
-async def play(ctx, url: str = None):
     if not url:
         await ctx.send("❌ URL을 같이 입력해줘!  예) `!틀어재껴 https://youtu.be/xxxx`")
         return
@@ -159,11 +175,13 @@ async def play(ctx, url: str = None):
 
     voice_channel = ctx.author.voice.channel
 
-    if ctx.voice_client:
-        if ctx.voice_client.is_playing():
-            ctx.voice_client.stop()
-        await ctx.voice_client.move_to(voice_channel)
-        vc = ctx.voice_client
+if ctx.voice_client:
+    if ctx.voice_client.is_playing():
+        ctx.voice_client.stop()
+
+    await ctx.voice_client.move_to(voice_channel)
+    vc = ctx.voice_client
+
 else:
     vc = await voice_channel.connect()
     await asyncio.sleep(2)
@@ -171,7 +189,6 @@ else:
 if not vc.is_connected():
     await ctx.send("❌ 음성 채널 연결 실패")
     return
-
     msg = await ctx.send("🔍 정보 긁어오는 중...")
 
     try:
