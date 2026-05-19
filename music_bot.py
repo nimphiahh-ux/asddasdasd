@@ -12,7 +12,6 @@ YDL_OPTIONS = {
 }
 
 with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
-    info = ydl.extract_info(url, download=False)
 import asyncio
 import os
 import anthropic
@@ -92,6 +91,19 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
+@bot.command()
+async def play(ctx, url):
+
+    YDL_OPTIONS = {
+        'format': 'bestaudio[ext=m4a]/bestaudio/best',
+        'cookiefile': 'cookies.txt',
+        'noplaylist': True,
+    }
+
+    with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
+        info = ydl.extract_info(url, download=False)
+
+    await ctx.send(f"재생 준비 완료: {info['title']}")
 
 
 # ─────────────────────────────────────────
