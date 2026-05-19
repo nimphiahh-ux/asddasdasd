@@ -1,4 +1,0 @@
-ydl_opts = {
-    'format': 'bestaudio/best',
-    'cookiefile': 'cookies.txt',
-}
