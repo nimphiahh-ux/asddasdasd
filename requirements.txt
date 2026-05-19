@@ -1,9 +1,4 @@
-discord.py[voice]>=2.0
+discord.py[voice]==2.3.2
 yt-dlp
-anthropic
 PyNaCl
-discord.py[voice]>=2.0
-yt-dlp
 anthropic
-PyNaCl
-imageio-ffmpeg
