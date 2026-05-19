@@ -4,17 +4,6 @@ FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
 import discord
 from discord.ext import commands
 import yt_dlp
-
-YDL_OPTIONS = {
-    'format': 'bestaudio[ext=m4a]/bestaudio/best',
-    'cookiefile': 'cookies.txt',
-    'noplaylist': True,
-}
-
-with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
-    info = ydl.extract_info(url, download=False)
-
-with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
 import asyncio
 import os
 import anthropic
@@ -77,7 +66,7 @@ YTDL_OPTIONS = {
     "no_warnings": True,
     "default_search": "auto",
     "source_address": "0.0.0.0",
-    "cookiefile": "/app/cookies.txt",
+   "cookiefile": "cookies.txt",
 }
 
 # ✅ 핵심 수정: -nostdin 추가 → SIGSEGV(-11) 방지
