@@ -8,8 +8,8 @@ import anthropic
 # ─────────────────────────────────────────
 #  설정
 # ─────────────────────────────────────────
-TOKEN = "여기에_봇_토큰_입력"        # 디스코드 봇 토큰
-ANTHROPIC_KEY = "여기에_Claude_API키_입력"  # https://console.anthropic.com
+TOKEN = os.environ.get("TOKEN")
+ANTHROPIC_KEY = os.environ.get("ANTHROPIC_KEY")
 
 # yt-dlp 옵션 (유튜브/사운드클라우드 등 지원)
 YTDL_OPTIONS = {
