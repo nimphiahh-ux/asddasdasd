@@ -8,7 +8,7 @@ import anthropic
 # ─────────────────────────────────────────
 #  설정
 # ─────────────────────────────────────────
-TOKEN = "여기에_봇_토큰_입력"        # 디스코드 봇 토큰
+TOKEN = "`MTUwNTcxNjY2NDYzNTg4NzY4Nw.G-9yTL.FPa6mZgQAxeltMGkYxrm63fAKv62Fn3hVUOyiM`"        # 디스코드 봇 토큰
 ANTHROPIC_KEY = "여기에_Claude_API키_입력"  # https://console.anthropic.com
 
 # yt-dlp 옵션 (유튜브/사운드클라우드 등 지원)
@@ -60,11 +60,11 @@ async def extract_audio_url(url: str) -> dict:
 # ─────────────────────────────────────────
 #  !틀어재껴 <url>  →  입장 + 재생
 # ─────────────────────────────────────────
-@bot.command(name="틀어재껴")
+@bot.command(name="ㅅㅊ")
 async def play(ctx, url: str = None):
     # URL 빠뜨린 경우
     if not url:
-        await ctx.send("❌ URL을 같이 입력해줘!  예) `!틀어재껴 https://youtu.be/xxxx`")
+        await ctx.send("❌ URL을 같이 입력해줘!  예) `!ㅅㅊ https://youtu.be/xxxx`")
         return
 
     # 명령어 친 유저가 음성채널에 있는지 확인
@@ -119,7 +119,7 @@ async def play(ctx, url: str = None):
 # ─────────────────────────────────────────
 #  !적당히해  →  정지 + 퇴장
 # ─────────────────────────────────────────
-@bot.command(name="적당히해")
+@bot.command(name="ㅋ")
 async def stop(ctx):
     vc = ctx.voice_client
 
