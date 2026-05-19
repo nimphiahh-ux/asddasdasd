@@ -1,4 +1,3 @@
-
 import imageio_ffmpeg
 FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
 
@@ -359,4 +358,3 @@ async def on_ready():
 # 실행
 # ─────────────────────────────────────────
 bot.run(TOKEN)
-````
