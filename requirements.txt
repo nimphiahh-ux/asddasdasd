@@ -2,3 +2,4 @@ discord.py[voice]==2.3.2
 yt-dlp
 PyNaCl
 anthropic
+imageio-ffmpeg
