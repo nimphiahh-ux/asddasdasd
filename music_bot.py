@@ -68,78 +68,59 @@ def make_audio_source(stream_url: str, volume: float = 0.4):
     print("⚠️  Warning: Opus not loaded, voice may not work")
     return False
 
+def load_opus():
+    if discord.opus.is_loaded():
+        return True
+
+    candidates = [
+        "/usr/lib/x86_64-linux-gnu/libopus.so.0",
+        "/usr/lib/aarch64-linux-gnu/libopus.so.0",
+        "/usr/lib/arm-linux-gnueabihf/libopus.so.0",
+        "/usr/lib/libopus.so.0",
+        "/usr/local/lib/libopus.so.0",
+        "libopus.so.0",
+        "libopus.so",
+        "libopus",
+    ]
+
+    for pattern in ["/usr/lib/**/libopus.so.0", "/lib/**/libopus.so.0"]:
+        candidates.extend(glob.glob(pattern, recursive=True))
+
+    found = ctypes.util.find_library("opus")
+    if found:
+        candidates.append(found)
+
+    for name in candidates:
+        try:
+            discord.opus.load_opus(name)
+            print(f"✅ Opus loaded: {name}")
+            return True
+        except:
+            pass
+
+    print("⚠️ Opus 로드 실패")
+    return False
+
+
 OPUS_LOADED = load_opus()
 
-# ─────────────────────────────────────────
-#  설정
-# ─────────────────────────────────────────
-TOKEN        = os.environ.get("TOKEN")
-ANTHROPIC_KEY = os.environ.get("ANTHROPIC_KEY")
 
-YTDL_OPTIONS = {
-    "format": "bestaudio/best",
-    "noplaylist": True,
-    "quiet": True,
-    "no_warnings": True,
-    "default_search": "auto",
-    "source_address": "0.0.0.0",
-   "cookiefile": "cookies.txt",
-}
-
-# ✅ 핵심 수정: -nostdin 추가 → SIGSEGV(-11) 방지
-#    -vn -ar 48000 -ac 2 로 출력 포맷 명시
-FFMPEG_OPTIONS = {
-    "before_options": (
-        "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5 "
-        "-nostdin"          # ← 이게 없으면 stdin 때문에 ffmpeg 크래시
-    ),
-    "options": "-vn -ar 48000 -ac 2",
-}
-
-intents = discord.Intents.default()
-intents.message_content = True
-
-bot = commands.Bot(command_prefix="!", intents=intents)
-@bot.command()
-async def play(ctx, url):
-
-    YDL_OPTIONS = {
-        'format': 'bestaudio[ext=m4a]/bestaudio/best',
-        'cookiefile': 'cookies.txt',
-        'noplaylist': True,
-    }
-
-    with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
-        info = ydl.extract_info(url, download=False)
-
-    await ctx.send(f"재생 준비 완료: {info['title']}")
-
-
-# ─────────────────────────────────────────
-#  오디오 소스 생성 헬퍼
-# ─────────────────────────────────────────
 def make_audio_source(stream_url: str, volume: float = 0.4):
-    """
-    Opus가 로드돼 있으면 FFmpegOpusAudio (안정적),
-    없으면 FFmpegPCMAudio + PCMVolumeTransformer 폴백.
-    볼륨은 ffmpeg -af 필터로 처리해 PCMVolumeTransformer 의존 제거.
-    """
-    # volume을 ffmpeg 필터로 처리 (PCMVolumeTransformer 없이도 동작)
     opts = dict(FFMPEG_OPTIONS)
     opts["options"] = f"{opts['options']} -af volume={volume}"
 
-   if OPUS_LOADED:
-    return discord.FFmpegOpusAudio(
-        stream_url,
-        executable=FFMPEG_PATH,
-        **opts,
-    )
-else:
-    return discord.FFmpegPCMAudio(
-        stream_url,
-        executable=FFMPEG_PATH,
-        **opts,
-    )
+    if OPUS_LOADED:
+        return discord.FFmpegOpusAudio(
+            stream_url,
+            executable=FFMPEG_PATH,
+            **opts,
+        )
+    else:
+        return discord.FFmpegPCMAudio(
+            stream_url,
+            executable=FFMPEG_PATH,
+            **opts,
+        )
 
 # ─────────────────────────────────────────
 #  yt-dlp URL 추출
